@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Cloud Calculator</title>
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        max-width: 640px;
+        margin: 2rem auto;
+        padding: 1rem;
+      }
+      input,
+      select {
+        padding: 0.5rem;
+        margin: 0.25rem;
+      }
+      button {
+        padding: 0.5rem 1rem;
+        margin-left: 0.25rem;
+      }
+      #result {
+        margin-top: 1rem;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Cloud Calculator</h1>
+    <div>
+      <input id="a" type="number" step="any" placeholder="Number A" />
+      <select id="op">
+        <option value="add">+</option>
+        <option value="sub">-</option>
+        <option value="mul">×</option>
+        <option value="div">÷</option>
+      </select>
+      <input id="b" type="number" step="any" placeholder="Number B" />
+      <button id="go">Calculate</button>
+    </div>
+    <div id="result"></div>
+
+    <script>
+      document.getElementById("go").addEventListener("click", async () => {
+        const a = document.getElementById("a").value;
+        const b = document.getElementById("b").value;
+        const op = document.getElementById("op").value;
+        const resp = await fetch("/api/calc", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ a, b, op }),
+        });
+        const data = await resp.json();
+        const el = document.getElementById("result");
+        if (data.error) el.textContent = "Error: " + data.error;
+        else el.textContent = "Result: " + data.result;
+      });
+    </script>
+  </body>
+</html>
